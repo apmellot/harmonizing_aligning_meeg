@@ -1,0 +1,13 @@
+name: dameeg
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+- numpy
+- matplotlib
+- pandas
+- scikit-learn
+- seaborn
+- joblib
+- h5io
+- pyriemann
