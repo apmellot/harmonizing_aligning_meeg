@@ -1,0 +1,11 @@
+# numpy
+*.npy
+*.csv
+
+# Cython + python compil
+*.o
+
+# Joblib
+*joblib/
+*__pycache__/
+*.pyc
