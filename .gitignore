@@ -9,3 +9,6 @@
 *joblib/
 *__pycache__/
 *.pyc
+
+# slurm
+*slurm*.out
