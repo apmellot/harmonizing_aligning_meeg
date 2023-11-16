@@ -1,7 +1,8 @@
+import argparse
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from joblib import Parallel, delayed, Memory
+from joblib import Parallel, delayed
 
 import itertools
 from sklearn.feature_selection import VarianceThreshold
@@ -18,6 +19,11 @@ from dameeg.recenter_rescale import align_recenter_rescale
 from dameeg.procrustes import align_procrustes
 from dameeg.z_score import align_z_score
 from utils.spatial_filter import ProjCommonSpace
+
+parser = argparse.ArgumentParser(description="Run CamCAN same subjects.")
+parser.add_argument('-s', '--seed', default=42, help='Random seed')
+args = parser.parse_args()
+seed = int(args.seed)
 
 
 def no_alignment(X_source, X_target):
@@ -38,9 +44,9 @@ def align_procrustes_trunc(X_source, X_target):
     return align_procrustes(X_source, X_target, method='truncated')
 
 
-BIDS_PATH = Path('/storage/store/data/camcan/BIDSsep/rest')
+BIDS_PATH = Path('/data/parietal/store/data/camcan/BIDSsep/rest')
 DERIVATIVES_PATH = Path(
-    '/storage/store3/work/amellot/derivatives/camcan/same_epochs'
+    '/data/parietal/store3/work/amellot/derivatives/camcan/same_epochs'
 )
 
 TASKS = [
@@ -48,9 +54,10 @@ TASKS = [
     ('passive', 'smt')
 ]
 
-N_JOBS = 30
+N_JOBS = 32
 N_REPEATS = 100
-rng = np.random.RandomState(42)
+rng = np.random.RandomState(seed)
+# rng = np.random.RandomState(42)
 RANDOM_STATES = rng.randint(0, 100000, N_REPEATS)
 method = 'riemann'
 scale = 1
@@ -80,10 +87,6 @@ if DEBUG:
     RANDOM_STATES = [10]
     N_JOBS = 1
     # func_list = [align_z_score]
-
-
-mem = Memory(".", verbose=False)
-func_list = [mem.cache(func) for func in func_list]
 
 
 def prepare_data(task_source, task_target):
@@ -222,4 +225,4 @@ results = pd.concat(results)
 if DEBUG:
     results.to_csv('./results/camcan_same_subjects_bootstrap_debug.csv')
 else:
-    results.to_csv(f'./results/camcan_same_subjects_bootstrap_method={method}.csv')
+    results.to_csv(f'./results/camcan_same_subjects_bootstrap_method={method}_{seed}.csv')
