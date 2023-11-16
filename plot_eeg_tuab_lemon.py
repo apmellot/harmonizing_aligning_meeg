@@ -9,8 +9,16 @@ plt.close('all')
 metric = 'r2'
 lemon_in_training = False
 
-results_riemann = pd.read_csv('./results/eeg_tuab_lemon_results_method=riemann.csv',
-                              index_col=0)
+results_riemann = pd.DataFrame()
+for i in range(1, 21):
+    results_riemann_ = pd.read_csv(
+        f'./results/eeg_tuab_lemon_results_method=riemann_{i}.csv',
+        index_col=0)
+    if results_riemann.empty:
+        results_riemann = results_riemann_
+    else:
+        results_riemann = pd.concat([results_riemann, results_riemann_])
+
 results_riemann.reset_index(inplace=True, drop=True)
 FIGURES_FOLDER = Path('./figures')
 FIGURES_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -32,8 +40,16 @@ results_riemann = results_riemann.replace(['no_alignment',
                                            'Procrustes',
                                            'Procrustes truncated',
                                            'Procrustes paired'])
-results_spoc = pd.read_csv('./results/eeg_tuab_lemon_results_method=spoc.csv',
-                           index_col=0)
+results_spoc = pd.DataFrame()
+for i in range(1, 21):
+    results_spoc_ = pd.read_csv(
+        f'./results/eeg_tuab_lemon_results_method=spoc_{i}.csv',
+        index_col=0)
+    if results_spoc.empty:
+        results_spoc = results_spoc_
+    else:
+        results_spoc = pd.concat([results_spoc, results_spoc_])
+
 results_spoc.reset_index(inplace=True, drop=True)
 FIGURES_FOLDER = Path('./figures')
 FIGURES_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -66,20 +82,22 @@ if metric == 'r2':
     sns.boxplot(x="r2", y="method", data=results_riemann, orient='h', ax=axes[0])
     axes[0].set_ylabel(None)
     axes[0].axvline(x=dummy_riemann_r2, color='k', linestyle='--')
-    axes[0].axvline(x=0.54, color='gray', linestyle='--')
+    axes[0].axvline(x=0.54, color='silver', linestyle='-.', linewidth=3)
     axes[0].set_xlabel(r"$R^2$")
     axes[0].annotate(text='A', xy=(-0.1, 1.05), xycoords=('axes fraction'),
                      fontsize=30, weight='bold')
     axes[0].set_title('Riemann', y=1.05)
+    axes[0].set_xlim(-1, 0.65)
     # Spoc results
     sns.boxplot(x="r2", y="method", data=results_spoc, orient='h', ax=axes[1])
     axes[1].set_ylabel(None)
     axes[1].axvline(x=dummy_spoc_r2, color='k', linestyle='--')
-    axes[1].axvline(x=0.54, color='gray', linestyle='--')
+    axes[1].axvline(x=0.54, color='silver', linestyle='-.', linewidth=3)
     axes[1].set_xlabel(r"$R^2$")
     axes[1].annotate(text='B', xy=(-0.1, 1.05), xycoords=('axes fraction'),
                      fontsize=30, weight='bold')
     axes[1].set_title('SPoC', y=1.05)
+    axes[1].set_xlim(-1, 0.65)
 
 elif metric == 'mae':
     # Riemann results

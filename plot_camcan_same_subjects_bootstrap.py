@@ -7,8 +7,16 @@ plt.close('all')
 
 metric = 'r2'
 method = 'riemann'
-all_results = pd.read_csv(f'./results/camcan_same_subjects_bootstrap_method={method}.csv',
-                          index_col=0)
+all_results = pd.DataFrame()
+for i in range(1, 21):
+    all_results_ = pd.read_csv(
+        f'./results/camcan_same_subjects_bootstrap_method=riemann_{i}.csv',
+        index_col=0)
+    if all_results.empty:
+        all_results = all_results_
+    else:
+        all_results = pd.concat([all_results, all_results_])
+
 all_results.reset_index(inplace=True, drop=True)
 FIGURES_FOLDER = Path('./figures/')
 FIGURES_FOLDER.mkdir(parents=True, exist_ok=True)

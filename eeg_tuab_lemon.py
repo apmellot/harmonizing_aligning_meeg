@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -18,6 +19,11 @@ from dameeg.recenter_rescale import align_recenter_rescale
 from dameeg.procrustes import align_procrustes
 from dameeg.z_score import align_z_score
 
+parser = argparse.ArgumentParser(description="Run CamCAN same subjects.")
+parser.add_argument('-s', '--seed', default=42, help='Random seed')
+args = parser.parse_args()
+seed = int(args.seed)
+
 
 def no_alignment(X_source, X_target):
     return X_source, X_target
@@ -29,16 +35,17 @@ def dummy(y_source, y_target):
     return mae_dummy, r2_dummy
 
 
-BIDS_PATH_SOURCE = Path('/storage/store3/data/TUAB_healthy_BIDS')
-BIDS_PATH_TARGET = Path('/storage/store3/data/LEMON_EEG_BIDS')
-DERIVATIVES_PATH_SOURCE = Path('/storage/store3/work/amellot/derivatives/TUAB')
+BIDS_PATH_SOURCE = Path('/data/parietal/store3/data/TUAB_healthy_BIDS')
+BIDS_PATH_TARGET = Path('/data/parietal/store3/data/LEMON_EEG_BIDS')
+DERIVATIVES_PATH_SOURCE = Path('/data/parietal/store3/work/amellot/derivatives/TUAB_healthy')
 DERIVATIVES_PATH_TARGET = Path(
-    '/storage/store3/work/amellot/derivatives/LEMON'
+    '/data/parietal/store3/work/amellot/derivatives/LEMON'
 )
 
-N_JOBS = -20
+N_JOBS = 64
 N_REPEATS = 100
-rng = np.random.RandomState(42)
+# rng = np.random.RandomState(42)
+rng = np.random.RandomState(seed)
 RANDOM_STATES = rng.randint(0, 100000, N_REPEATS)
 method = 'riemann'
 scale = 1
@@ -216,4 +223,4 @@ results = pd.concat(results)
 if DEBUG:
     results.to_csv('./results/eeg_tuab_lemon_results_debug.csv')
 else:
-    results.to_csv(f'./results/eeg_tuab_lemon_results_method={method}.csv')
+    results.to_csv(f'./results/eeg_tuab_lemon_results_method={method}_{seed}.csv')
