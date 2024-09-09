@@ -9,11 +9,13 @@ Neuroscience studies face challenges in gathering large datasets, which limits t
 ## Citation
 
 ```
-@article {Mellot2023harmonizing,
-	author = {Apolline Mellot and Antoine Collas and Pedro L. C. Rodrigues and Denis Engemann and Alexandre Gramfort},
-	title = {Harmonizing and aligning M/EEG datasets with covariance-based techniques to enhance predictive regression modeling},
-	year = {2023},
-	doi = {10.1101/2023.04.27.538550},
-	journal = {bioRxiv}
+@article{mellot2023harmonizing,
+  title={Harmonizing and aligning M/EEG datasets with covariance-based techniques to enhance predictive regression modeling},
+  author={Mellot, Apolline and Collas, Antoine and Rodrigues, Pedro LC and Engemann, Denis and Gramfort, Alexandre},
+  journal={Imaging Neuroscience},
+  volume={1},
+  pages={1--23},
+  year={2023},
+  publisher={MIT Press One Broadway, 12th Floor, Cambridge, Massachusetts 02142, USA~…}
 }
 ```
